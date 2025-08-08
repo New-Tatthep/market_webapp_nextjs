@@ -12,7 +12,7 @@ export default function Home() {
       <main className="flex-grow">
         <Homepage />
         <Categories /> 
-        {/* <FeaturedProducts /> */}
+        <FeaturedProducts />
       </main>
       <Footer />
     </div>

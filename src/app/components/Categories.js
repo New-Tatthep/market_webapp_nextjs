@@ -2,7 +2,7 @@
 export default function Categories() {
   return (
     <section className="py-16">
-      <div class="container flex flex-col mx-auto ">
+      <div className="container flex flex-col mx-auto ">
           <h2 className="text-4xl font-bold text-center mb-8">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Example Category Card */}

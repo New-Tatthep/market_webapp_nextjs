@@ -8,10 +8,29 @@ export default function useProducts() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/products'); // Your Go API endpoint
+                const response = await fetch('http://localhost:5001/market-service/v1/product/filter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        filters: [
+                            {
+                                field: 'name',
+                                value: ''
+                            }
+                        ],
+                        option: {
+                            limit: 10,
+                            offset: 0
+                        }
+                    }),
+                });
+
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status} ${response.statusText}`);
                 }
+
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {
