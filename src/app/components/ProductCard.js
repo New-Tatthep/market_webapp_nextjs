@@ -1,18 +1,17 @@
 // src/app/components/ProductCard.js
 export default function ProductCard({ product }) {
-    return (
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105">
-        <img src={product.image} alt={product.name} className="w-full h-48 object-cover mb-2" />
-        <div className="p-4">
-          <h3 className="text-lg font-semibold">{product.name}</h3>
-          <p className="text-lg font-bold text-blue-600">{product.price}</p>
-          <a
-            href={`/product/${product.id}`}
-            className="block mt-4 bg-blue-600 text-white text-center rounded-full py-2 hover:bg-blue-700 transition"
-          >
-            View Product
-          </a>
-        </div>
-      </div>
-    );
-  }
+  return (
+    <div className="border rounded-2xl shadow-lg p-4 flex flex-col items-center text-center hover:shadow-xl transition duration-300">
+      <img
+        src={product.image?.public_url || "/placeholder.jpg"}
+        alt={product.name || "Product image"}
+        className="w-full h-48 object-cover rounded-md mb-4"
+      />
+      <h3 className="text-lg font-semibold">{product.name}</h3>
+      <p className="text-gray-600">{product.description || "No description."}</p>
+      <p className="mt-2 font-bold text-blue-600">
+        {product.price ? `${product.price} ฿` : "Price not available"}
+      </p>
+    </div>
+  );
+}
