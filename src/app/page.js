@@ -1,14 +1,68 @@
 // src/app/page.js
+"use client";
+
+import { useState } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Categories from './components/product/Categories';
 import FeaturedProducts from './components/product/FeaturedProducts';
+import CartDrawer from './components/cart/CartDrawer';
 import Link from 'next/link';
 
 export default function Home() {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  // ฟังก์ชันเพิ่มสินค้าลงตะกร้า
+  const handleAddToCart = (product) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(item => item.product_code === product.code);
+      if (existingItem) {
+        // ถ้ามีอยู่แล้ว เพิ่มจำนวนขึ้น 1
+        return prevItems.map(item => 
+          item.product_code === product.code 
+            ? { ...item, quantity: item.quantity + 1 } 
+            : item
+        );
+      }
+      // ถ้ายังไม่มี ให้เพิ่มใหม่
+      return [...prevItems, {
+        product_code: product.code,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image: product.image
+      }];
+    });
+  };
+
+  // ฟังก์ชันอัปเดตจำนวนสินค้าในตะกร้า
+  const handleUpdateQuantity = (productCode, newQuantity) => {
+    if (newQuantity <= 0) {
+      handleRemoveItem(productCode);
+      return;
+    }
+    setCartItems(prevItems => 
+      prevItems.map(item => 
+        item.product_code === productCode 
+          ? { ...item, quantity: newQuantity } 
+          : item
+      )
+    );
+  };
+
+  // ฟังก์ชันลบสินค้าออกจากตะกร้า
+  const handleRemoveItem = (productCode) => {
+    setCartItems(prevItems => prevItems.filter(item => item.product_code !== productCode));
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#FAF9F5]">
-      <Header />
+      {/* ส่งฟังก์ชันเปิดตะกร้าและจำนวนสินค้าไปให้ Header (ถ้า Header รองรับ) */}
+      <Header
+        cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+      />
       
       <main className="flex-grow">
         {/* Editorial Hero Section */}
@@ -46,11 +100,20 @@ export default function Home() {
         {/* Categories Section */}
         <Categories /> 
 
-        {/* Featured Products Section */}
-        <FeaturedProducts />
+        {/* Featured Products Section (ส่ง handleAddToCart เข้าไปเผื่อใช้ใน ProductCard) */}
+        <FeaturedProducts onAddToCart={handleAddToCart} />
       </main>
 
       <Footer />
+
+      {/* Cart Drawer Component */}
+      <CartDrawer 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onUpdateQuantity={handleUpdateQuantity}
+        onRemoveItem={handleRemoveItem}
+      />
     </div>
   );
 }

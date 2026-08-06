@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export default function Header() {
+export default function Header({ cartCount = 0, onOpenCart }) { // 1. รับ props ตรงนี้
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +16,7 @@ export default function Header() {
   const [loadingLogout, setLoadingLogout] = useState(false);
   
   const dropdownRef = useRef(null);
-  const cartCount = 2;
+  // ลบ const cartCount = 2 ออก เพราะรับมาจาก props แล้ว
 
   const checkAuthStatus = () => {
     const token = localStorage.getItem('market_token');
@@ -131,7 +131,11 @@ export default function Header() {
 
         {/* Right: Actions (Cart & Auth) */}
         <div className="flex items-center gap-4 sm:gap-6">
-          <Link href="/cart" className="relative text-zinc-900 hover:text-amber-700 transition-colors flex items-center gap-1.5">
+          {/* 2. เปลี่ยนจาก Link เป็น button เพื่อกดแล้วเรียกฟังก์ชันเปิด CartDrawer */}
+          <button 
+            onClick={onOpenCart} 
+            className="relative text-zinc-900 hover:text-amber-700 transition-colors flex items-center gap-1.5 focus:outline-none"
+          >
             <span className="text-sm">🛒</span>
             <span className="text-[11px] font-light hidden sm:inline">Cart</span>
             {cartCount > 0 && (
@@ -139,7 +143,7 @@ export default function Header() {
                 {cartCount}
               </span>
             )}
-          </Link>
+          </button>
 
           <div className="hidden sm:block h-3 w-[1px] bg-stone-300" />
 
@@ -153,7 +157,6 @@ export default function Header() {
                 {userAvatar ? (
                   <img src={userAvatar} alt="User Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  /* Unknown Avatar (SVG ไอคอนรูปคน) */
                   <svg className="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                   </svg>

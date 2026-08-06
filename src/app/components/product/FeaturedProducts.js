@@ -8,7 +8,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ onAddToCart }) { // 1. รับ onAddToCart เข้ามาที่นี่
   const { products, loading, error } = useProducts();
   const product_data = products?.data?.datas || [];
 
@@ -42,7 +42,10 @@ export default function FeaturedProducts() {
           >
             {product_data.map((product) => (
               <SwiperSlide key={product.code} className="h-auto">
-                <ProductCard product={product} />
+                <ProductCard 
+                  product={product} 
+                  onAddToCart={onAddToCart} // 2. ส่งต่อ onAddToCart ไปให้ ProductCard
+                />
               </SwiperSlide>
             ))}
           </Swiper>
